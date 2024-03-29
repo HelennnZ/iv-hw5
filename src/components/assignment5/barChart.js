@@ -4,7 +4,7 @@ import { XAxis, YAxis } from "./axes";
 
 
 export function BarChart (props) {
-    const {offsetX, offsetY, data, height, width, selectedAirlineID, setSelectedAirlineID} = props;
+    const {offsetX, offsetY, height, width, data, selectedAirline, setSelectedAirline} = props;
     // Task 1: TODO
     
     // 1. find the maximum of the Count attribute in the data
@@ -20,16 +20,6 @@ export function BarChart (props) {
         .range([0, height])
         .padding(0.2);
 
-    const bars = data.map(d => (
-        <rect key={d.AirlineID} 
-                y={yScale(d.AirlineName)}
-                width={xScale(d.Count)}
-                height={yScale.bandwidth()}
-                stroke = "black"
-                fill="#2a5599" />
-    ));
-
-    
     // Task 3. TODO
     // 1. define an arrow function color; it takes a data item, d, as input. 
     // If d.AirlineID is equal to the selectedAirlineID, it returns "#992a5b"; 
@@ -40,11 +30,34 @@ export function BarChart (props) {
     // 4. adding properties, onMouseOver and onMouseOut, to the <rect> tags.
     // Note: the function of the onMouseOver properties should be an arrow function 
     // that wraps the onMouseOver you defined since it takes d as input.
-    
+
+    const color = d => d.AirlineID === selectedAirline ? "#992a5b" : "#2a5599";
+
+    // Define onMouseOver handler
+    const onMouseOver = d => {
+        setSelectedAirline(d.AirlineID);
+    };
+
+    // Define onMouseOut handler
+    const onMouseOut = () => {
+        setSelectedAirline(null);
+    };
+
+    // Generate bars using the color function and event handlers
+    const bars = data.map(d => (
+        <rect key={d.AirlineID} 
+                y={yScale(d.AirlineName)}
+                width={xScale(d.Count)}
+                height={yScale.bandwidth()}
+                stroke="black"
+                fill={color(d)} // Use the color function here
+                onMouseOver={() => onMouseOver(d)} // Set onMouseOver handler
+                onMouseOut={onMouseOut} // Set onMouseOut handler
+        />
+    ));
+
     return (
         <g transform={`translate(${offsetX}, ${offsetY})`}>
-
-{/* // 3. return the bars */}
             {bars}
             <XAxis xScale={xScale} width={width} height={height} />
             <YAxis yScale={yScale} height={height} offsetX={offsetX} />
