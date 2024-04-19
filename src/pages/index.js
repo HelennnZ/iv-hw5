@@ -3,7 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
-import AirlineRoutes from "./assignment5_student"; // Import the Charts component
+import AirlineRoutes from "./assignment6_student"; // Import the Charts component
 
 const inter = Inter({ subsets: ["latin"] });
 

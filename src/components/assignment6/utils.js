@@ -60,6 +60,29 @@ function groupByCity(data) {
     //  it returns an array of objects; the Count of each object represents the number
     //  of routes related to the city.
     //Hint: you need to use d.DestCity and d.SourceCity;
+    let result = data.reduce((result, d) => {
+        // Check if the destination city already exists in the result
+        let currentDest = result[d.DestCity] || {
+            "City": d.DestCity,
+            "Count": 0
+        };
+        currentDest.Count += 1;
+        result[d.DestCity] = currentDest;
+
+        // Check if the source city already exists in the result
+        let currentSource = result[d.SourceCity] || {
+            "City": d.SourceCity,
+            "Count": 0
+        };
+        currentSource.Count += 1;
+        result[d.SourceCity] = currentSource;
+
+        return result;
+    }, {});
+
+    // Convert the object to an array of objects
+    result = Object.keys(result).map(key => result[key]);
+    return result;
 }
 
 export {

@@ -8,8 +8,54 @@ function AirportBubble(props){
     // console.log(groupByCity(routes));
     if(selectedAirline){
         let selectedRoutes = routes.filter(a => a.AirlineID === selectedAirline);
-        let cities;
-        let raidus;
+        let cities = groupByCity(selectedRoutes);
+        cities.sort((a, b) => a.Count - b.Count);
+        
+        let radiusScale = scaleLinear()
+            .range([2, width*0.15])
+            .domain([min(cities, d => d.Count), max(cities, d => d.Count)]);
+        
+        let simulation = forceSimulation(cities)
+            .velocityDecay(0.2)
+            .force("x", forceX(width/2).strength(0.02))
+            .force("y", forceY(height/2).strength(0.02))
+            .force("collide", forceCollide().radius(d => radiusScale(d.Count)))
+            .tick(200);
+        
+        return (
+            <g>
+                {cities.map((city, idx) => (
+                    <circle
+                        key={idx}
+                        cx={city.x}
+                        cy={city.y}
+                        r={radiusScale(city.Count)}
+                        fill={idx < cities.length - 5 ? "#2a5599" : "#ADD8E6"}
+                        stroke="black"
+                        strokeWidth={2}
+                    />
+                ))}
+                {cities.slice(-5).map((city, idx) => (
+                    <text
+                        key={idx}
+                        x={city.x}
+                        y={city.y}
+                        style={{
+                            textAnchor: "middle",
+                            stroke: "pink",
+                            strokeWidth: "0.5em",
+                            fill: "#992a2a",
+                            fontSize: 16,
+                            fontFamily: "cursive",
+                            paintOrder: "stroke",
+                            strokeLinejoin: "round"
+                        }}
+                    >
+                        {city.City}
+                    </text>
+                ))}
+            </g>
+        );
         //TODO: when the selectedAirline is not null,
         //1.Obtain an array of cities from the selectedRoutes by groupByCity
         //2.Sort the cities ascendingly by the d.Count (i.e., the number of routes from/to the city)
@@ -34,6 +80,7 @@ function AirportBubble(props){
         //     fill:"#992a2a", fontSize:16, fontFamily:"cursive", 
         //     paintOrder:"stroke", strokeLinejoin:"round"}}
         //Note: for each <circle />, please set the key={idx} to avoid the warnings.
+        
         return <g>
             
         </g>
@@ -42,9 +89,55 @@ function AirportBubble(props){
         //1.Obtain an array of cities from the routes by groupByCity;
         //2.Plot the bubble chart; highlight the top 5 hub cities worldwide,
         //  using the same settings as the case when the selectedAirline is not null;
-        return <g>
-
+       
+        let cities = groupByCity(routes);
+        cities.sort((a, b) => a.Count - b.Count);
+        
+        let radiusScale = scaleLinear()
+            .range([2, width*0.15])
+            .domain([min(cities, d => d.Count), max(cities, d => d.Count)]);
+        
+        let simulation = forceSimulation(cities)
+            .velocityDecay(0.2)
+            .force("x", forceX(width/2).strength(0.02))
+            .force("y", forceY(height/2).strength(0.02))
+            .force("collide", forceCollide().radius(d => radiusScale(d.Count)))
+            .tick(200);
+        
+        return (
+            <g>
+                {cities.map((city, idx) => (
+                    <circle
+                        key={idx}
+                        cx={city.x}
+                        cy={city.y}
+                        r={radiusScale(city.Count)}
+                        fill={idx < cities.length - 5 ? "#2a5599" : "#ADD8E6"}
+                        stroke="black"
+                        strokeWidth={2}
+                    />
+                ))}
+                {cities.slice(-5).map((city, idx) => (
+                    <text
+                        key={idx}
+                        x={city.x}
+                        y={city.y}
+                        style={{
+                            textAnchor: "middle",
+                            stroke: "pink",
+                            strokeWidth: "0.5em",
+                            fill: "#992a2a",
+                            fontSize: 16,
+                            fontFamily: "cursive",
+                            paintOrder: "stroke",
+                            strokeLinejoin: "round"
+                        }}
+                    >
+                        {city.City}
+                    </text>
+                ))}
         </g>
+        );
     }
 }
 
